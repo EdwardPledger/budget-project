@@ -1,26 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app">
+    {{ budgetRows }}
+  </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import BudgetRow from './types/BudgetRow'
 
-export default {
+export default defineComponent({
   name: 'App',
-  components: {
-    HelloWorld
+  components: {},
+  setup() {
+    const budgetRows = ref<BudgetRow[]>([
+      { name: 'Rent', budgetAmount: 1000, spent: 800 },
+      { name: 'Groceries', budgetAmount: 100, spent: 25 },
+      { name: 'Gas', budgetAmount: 50, spent: 0 }
+    ])
+
+    return { budgetRows }
+  },
+  methods: {
   }
-}
+})
+
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
