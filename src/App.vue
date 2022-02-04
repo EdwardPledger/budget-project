@@ -1,21 +1,22 @@
 <template>
   <div class="app">
-    {{ budgetRows }}
+    <BudgetTable :budgetRows="budgetRows" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import BudgetRow from './types/BudgetRow'
+import BudgetTable from './components/BudgetTable.vue'
 
 export default defineComponent({
   name: 'App',
-  components: {},
+  components: { BudgetTable },
   setup() {
     const budgetRows = ref<BudgetRow[]>([
-      { name: 'Rent', budgetAmount: 1000, spent: 800 },
-      { name: 'Groceries', budgetAmount: 100, spent: 25 },
-      { name: 'Gas', budgetAmount: 50, spent: 0 }
+      { id: 1, name: 'Rent', budgetAmount: 1000, spent: 800 },
+      { id: 2, name: 'Groceries', budgetAmount: 100, spent: 25 },
+      { id: 3, name: 'Gas', budgetAmount: 50, spent: 0 }
     ])
 
     return { budgetRows }
