@@ -1,34 +1,63 @@
 <template>
-  <div id="form-popup" v-bind:style="{ display: displayValue }">
+  <div id="form-popup">
     <form id="form-change-value">
       <h1>Change Value</h1>
       
       <label for="name"><b>Name</b></label>
-      <input type="text" placeholder="Name of category" name="name" required>
+      <input type="text" name="name" required
+            :placeholder="mutableBudgetRow.name" 
+            v-model="mutableBudgetRow.name">
+      <br>
+      <label for="budgetAmount"><b>Budget Amount</b></label>
+      <input type="text" name="budgetAmount" required
+            :placeholder="mutableBudgetRow.budgetAmount" 
+            v-model="mutableBudgetRow.budgetAmount">
+      <label for="amountSpent"><b>Spent</b></label>
+      <input type="text" name="amountSpent" required
+            :placeholder="mutableBudgetRow.spent" 
+            v-model="mutableBudgetRow.spent">
       <br>
       <br>
-      <button type="submit">Submit</button>
-      <button type="button" @click="closeForm()">Close</button>
+      <button type="button" @click="updateBudgetRow">Submit</button>
+      <button type="button" @click="closeForm">Close</button>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
+import BudgetRow from '@/types/BudgetRow'
 
 export default defineComponent({
-  setup() {
+  props: {
+    budgetRow: {
+      required: true,
+      type: Object as PropType<BudgetRow>
+    }
+  },
+  emits: ['updateBudgetRow'],
+  setup(props, context) {
+    const mutableBudgetRow = ref<BudgetRow>({
+        id: props.budgetRow.id,
+        name: props.budgetRow.name,
+        budgetAmount: props.budgetRow.budgetAmount,
+        spent: props.budgetRow.spent
+      })
+
+    const updateBudgetRow = () => {
+      console.log(mutableBudgetRow.value)
+      context.emit('updateBudgetRow', mutableBudgetRow.value)
+    }
+
     const closeForm = () => {
       // TODO: Find a cleaner way to do this
       document.getElementById("form-popup")!.style.display = "none";
     }
 
-    return { closeForm }
+    return { mutableBudgetRow, updateBudgetRow, closeForm }
   },
-  props: {
-    displayValue: {
-      required: true,
-      type: String
+  data () {
+    return {
     }
   }
 })
@@ -36,8 +65,8 @@ export default defineComponent({
 
 <style scoped>
   #form-popup {
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 250px;
     position: absolute;
     top: 25%;
     left: 25%;

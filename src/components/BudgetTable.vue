@@ -2,15 +2,20 @@
   <div id="budgetRows">
     <ul>
       <li v-for="budgetRow in budgetRows" :key="budgetRow.id">
-        <div id="name" style="font-weight:bold;" @click="updateName(budgetRow)">{{ budgetRow.name }}</div> 
+        <div id="name" style="font-weight:bold;">{{ budgetRow.name }}</div> 
         <div id="budgetAmount">{{ budgetRow.budgetAmount }}</div> 
         <div id="spent">{{ budgetRow.spent }}</div>
+        <div class="update-row-button">
+          <button type="button" @click="toggleForm(budgetRow)">Update</button>
+        </div>
         <br>
         <hr>
       </li>
     </ul>
   </div>
-  <ChangePopUp :displayValue="displayValue" ref="changePopUp"/>
+  <ChangePopUp :budgetRow="budgetRowToBeUpdated"
+              v-if="showPopup"
+              @updateBudgetRow="onUpdateBudgetRow"/>
 </template>
 
 <script lang="ts">
@@ -20,30 +25,39 @@ import ChangePopUp from './ChangePopUp.vue'
 
 export default defineComponent({
   components: { ChangePopUp },
-  setup() {
-    var displayValue = ref<String>("none")
-
-    // TODO: Does not reopen
-    const updateName = (budgetRow: BudgetRow) => {
-      console.log('hi')
-      budgetRow.name = 'hiii'
-      displayValue.value = "block"
-    }
-
-    return { displayValue, updateName }
-  },
   props: {
     budgetRows: {
       required: true,
       type: Array as PropType<BudgetRow[]>
     }
-  }
+  },
+  setup(props) {
+    let budgetRowToBeUpdated = ref<BudgetRow>(props.budgetRows[0])
+    let showPopup = ref<boolean>(false)
+    
+    const toggleForm = (budgetRow: BudgetRow) => {
+      budgetRowToBeUpdated.value = budgetRow
+      showPopup.value = true
+    }
+    
+    // const onUpdateBudgetRow = computed((budgetRow: BudgetRow) => {
+    //   console.log(budgetRow.name)
+    //   return budgetRow
+    // })
+
+    const onUpdateBudgetRow = (budgetRow: BudgetRow) => {
+      console.log(budgetRow.name)
+      //var budgetRow = props.budgetRows.filter(br => { return br.id === budgetRow.id })
+    }
+
+    return { budgetRowToBeUpdated, showPopup, toggleForm, onUpdateBudgetRow }
+  },
 })
 </script>
 
 <style scoped>
   #budgetRows {
-    width: 300px;
+    width: 400px;
   }
   ul {
     list-style-type: none;
