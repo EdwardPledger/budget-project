@@ -19,7 +19,6 @@
       <br>
       <br>
       <button type="button" @click="updateBudgetRow">Submit</button>
-      <button type="button" @click="closeForm">Close</button>
     </form>
   </div>
 </template>
@@ -45,16 +44,10 @@ export default defineComponent({
       })
 
     const updateBudgetRow = () => {
-      console.log(mutableBudgetRow.value)
       context.emit('updateBudgetRow', mutableBudgetRow.value)
     }
 
-    const closeForm = () => {
-      // TODO: Find a cleaner way to do this
-      document.getElementById("form-popup")!.style.display = "none";
-    }
-
-    return { mutableBudgetRow, updateBudgetRow, closeForm }
+    return { mutableBudgetRow, updateBudgetRow }
   },
   data () {
     return {

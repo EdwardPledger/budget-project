@@ -13,6 +13,7 @@
       </li>
     </ul>
   </div>
+  <button @click="addRow">Add Row</button>
   <ChangePopUp :budgetRow="budgetRowToBeUpdated"
               v-if="showPopup"
               @updateBudgetRow="onUpdateBudgetRow"/>
@@ -20,37 +21,47 @@
 
 <script lang="ts">
 import BudgetRow from '@/types/BudgetRow'
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import ChangePopUp from './ChangePopUp.vue'
+import budgetDataJson from '../assets/json/BudgetData.json'
 
 export default defineComponent({
   components: { ChangePopUp },
-  props: {
-    budgetRows: {
-      required: true,
-      type: Array as PropType<BudgetRow[]>
-    }
-  },
-  setup(props) {
-    let budgetRowToBeUpdated = ref<BudgetRow>(props.budgetRows[0])
+  setup() {
+    const budgetRows = ref<BudgetRow[]>(budgetDataJson.data)
+    
+    let budgetRowToBeUpdated = ref<BudgetRow>(budgetRows.value[0])
     let showPopup = ref<boolean>(false)
     
     const toggleForm = (budgetRow: BudgetRow) => {
       budgetRowToBeUpdated.value = budgetRow
       showPopup.value = true
     }
-    
-    // const onUpdateBudgetRow = computed((budgetRow: BudgetRow) => {
-    //   console.log(budgetRow.name)
-    //   return budgetRow
-    // })
 
-    const onUpdateBudgetRow = (budgetRow: BudgetRow) => {
-      console.log(budgetRow.name)
-      //var budgetRow = props.budgetRows.filter(br => { return br.id === budgetRow.id })
+    const onUpdateBudgetRow = (updatedBudgetRow: BudgetRow) => {
+      let budgetRow : BudgetRow = 
+        budgetRows.value.filter(br => { return br.id === updatedBudgetRow.id })[0]
+      
+      budgetRow.name = updatedBudgetRow.name
+      budgetRow.budgetAmount = updatedBudgetRow.budgetAmount
+      budgetRow.spent = updatedBudgetRow.spent
+
+      showPopup.value = false
     }
 
-    return { budgetRowToBeUpdated, showPopup, toggleForm, onUpdateBudgetRow }
+    // TODO: Figure out a better way to create id's
+    const addRow = () => {
+      budgetRows.value.push({
+        id: budgetRows.value.length + 1,
+        name: 'Category',
+        budgetAmount: 0,
+        spent: 0
+      })
+    }
+
+    return { 
+      budgetRows, budgetRowToBeUpdated, showPopup, toggleForm, onUpdateBudgetRow, addRow 
+      }
   },
 })
 </script>

@@ -1,0 +1,23 @@
+{
+  "data": 
+  [
+    {
+      "id":1,
+      "name":"Rent",
+      "budgetAmount":1000,
+      "spent":800
+    },
+    {
+      "id":2,
+      "name":"Groceries",
+      "budgetAmount":100,
+      "spent":25
+    },
+    {
+      "id":3,
+      "name":"Gas",
+      "budgetAmount":50,
+      "spent":0
+    }
+  ]
+}

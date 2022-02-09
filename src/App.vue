@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <BudgetTable :budgetRows="budgetRows" />
+    <BudgetTable />
   </div>
 </template>
 
