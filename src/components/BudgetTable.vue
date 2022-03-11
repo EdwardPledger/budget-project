@@ -24,7 +24,7 @@
             <div id="budget-amount">{{ budgetRow.budgetAmount }}</div> 
             <div id="spent">{{ budgetRow.spent }}</div>
             <div class="update-row-button">
-              <it-button type="primary" round @click="toggleForm(budgetRow)">
+              <it-button type="primary" round @click="openUpdateBudgetRowModal(budgetRow)">
                         Update
               </it-button>
             </div>
@@ -39,33 +39,26 @@
       </div>
     </div>
   </div>
-  <!-- <div id="add-row-button">
+  <div id="add-row-button">
     <ChangePopUp :budgetRow="budgetRowToBeUpdated"
               v-if="showPopup"
-              @updateBudgetRow="onUpdateBudgetRow"/>
-  </div> -->
-  <!-- <UpdateCategoryModal v-show="isModalVisible" @close="closeModal"/>         -->
+              @updateBudgetRow="onUpdateBudgetRow" />
+  </div>       
 </template>
 
 <script lang="ts">
 import BudgetRow from '@/types/BudgetRow'
 import { defineComponent, ref } from 'vue'
-//import ChangePopUp from './ChangePopUp.vue'
-// import UpdateCategoryModal from './UpdateCategoryModal.vue'
+import ChangePopUp from './ChangePopUp.vue'
+
 import budgetDataJson from '../assets/json/BudgetData.json'
 
 export default defineComponent({
-  components: {  },
-  setup() {
+  components: { ChangePopUp },
+  emits: ['openUpdateBudgetRowModal'],
+  setup(props, context) {
     const budgetRows = ref<BudgetRow[]>(budgetDataJson.data)
     const totalBudgetAmountLeft = ref<number>(2000)
-
-
-    let isModalVisible = ref<boolean>(false)
-    const showModal = () => isModalVisible.value = true
-    const closeModal = () => isModalVisible.value = false
-
-
 
     // Calculate budget amount left feature
     const calculateInitialBudgetAmountLeft = () => {
@@ -109,6 +102,9 @@ export default defineComponent({
       showPopup.value = false
     }
 
+    const openUpdateBudgetRowModal = (budgetRow: BudgetRow) => {
+      context.emit('openUpdateBudgetRowModal', budgetRow)
+    }
 
     // Add budget row feature
     // TODO: Figure out a better way to create id's
@@ -135,8 +131,8 @@ export default defineComponent({
     }
 
     return { 
-      budgetRows, budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft, isModalVisible, // Variables
-      calculateInitialBudgetAmountLeft, toggleForm, onUpdateBudgetRow, addRow, deleteRow, showModal, closeModal  // Functions
+      budgetRows, budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft,  // Variables
+      calculateInitialBudgetAmountLeft, toggleForm, onUpdateBudgetRow, openUpdateBudgetRowModal, addRow, deleteRow,  // Functions
     }
   },
 })
