@@ -48,10 +48,6 @@ export default defineComponent({
     }
 
     return { mutableBudgetRow, updateBudgetRow }
-  },
-  data () {
-    return {
-    }
   }
 })
 </script>

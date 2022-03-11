@@ -2,15 +2,13 @@
   <div id="total-amount">
     <div>Total Budget Left</div>
     <div id="total-amount-value">${{ totalBudgetAmountLeft }}</div>
-    <br>
-    <hr>
+    <it-divider />
   </div>
   <div id="headers">
     <div id="name-header">Category</div>
     <div id="budget-amount-header">Budget Amount</div>
     <div id="spent-header">Spent</div>
-    <br>
-    <hr>
+    <it-divider />
   </div>
   <div id="budgetRows">
     <ul>
@@ -19,55 +17,61 @@
         <div id="budgetAmount">{{ budgetRow.budgetAmount }}</div> 
         <div id="spent">{{ budgetRow.spent }}</div>
         <div class="update-row-button">
-          <button type="button" @click="toggleForm(budgetRow)">Update</button>
+          <it-button type="primary" round @click="toggleForm(budgetRow)">
+                    Update
+          </it-button>
         </div>
         <div class="delete-row-button">
-          <button @click="deleteRow(budgetRow)">Delete</button>
+          <it-button type="danger" round @click="deleteRow(budgetRow)">
+            Delete
+          </it-button>
         </div>
-        <br>
-        <hr>
+        <it-divider />
       </li>
     </ul>
   </div>
-  <button @click="addRow">Add Row</button>
+  <it-button type="success" round @click="addRow">
+    Add Row
+  </it-button>
+  <it-button @click="showModal">Open Modal</it-button>
   <ChangePopUp :budgetRow="budgetRowToBeUpdated"
               v-if="showPopup"
               @updateBudgetRow="onUpdateBudgetRow"/>
+  <UpdateCategoryModal v-show="isModalVisible" @close="closeModal"/>        
 </template>
 
 <script lang="ts">
 import BudgetRow from '@/types/BudgetRow'
-import { defineComponent, ref, onBeforeMount } from 'vue'
+import { defineComponent, ref } from 'vue'
 import ChangePopUp from './ChangePopUp.vue'
+import UpdateCategoryModal from './UpdateCategoryModal.vue'
 import budgetDataJson from '../assets/json/BudgetData.json'
 
 export default defineComponent({
-  components: { ChangePopUp },
+  components: { ChangePopUp, UpdateCategoryModal },
   setup() {
     const budgetRows = ref<BudgetRow[]>(budgetDataJson.data)
     const totalBudgetAmountLeft = ref<number>(2000)
 
+
+    let isModalVisible = ref<boolean>(false)
+    const showModal = () => isModalVisible.value = true
+    const closeModal = () => isModalVisible.value = false
+
+
+
     // Calculate budget amount left feature
     const calculateInitialBudgetAmountLeft = () => {
-      let totalBudgeted = 0
       
       budgetRows.value.forEach((br) => {
-        if (br.budgetAmount >= br.spent) totalBudgeted += br.budgetAmount
-        else totalBudgeted += br.spent
+        totalBudgetAmountLeft.value -= br.budgetAmount
       })
-      totalBudgetAmountLeft.value -= totalBudgeted
-
+      
       return totalBudgetAmountLeft;
     }
 
-    onBeforeMount(() => calculateInitialBudgetAmountLeft())
-
-    // TODO: Make this more robust/handle all scenarios
-    const calculateBudgetAmountLeft = (budgetAmount: number, spent: number) => {
-      if (budgetAmount >= spent) totalBudgetAmountLeft.value -= budgetAmount
-      else totalBudgetAmountLeft.value -= spent
-    }
-    
+    calculateInitialBudgetAmountLeft()
+  
 
     // Update budget row feature
     let budgetRowToBeUpdated = ref<BudgetRow>(budgetRows.value[0])
@@ -78,15 +82,22 @@ export default defineComponent({
       showPopup.value = true
     }
 
-    const onUpdateBudgetRow = (updatedBudgetRow: BudgetRow) => {
+    const onUpdateBudgetRow = (updatedBudgetRow: any) => {
       let budgetRow : BudgetRow = 
         budgetRows.value.filter(br => { return br.id === updatedBudgetRow.id })[0]
+      const budgetAmount = budgetRow.budgetAmount
+      const updatedBudgetAmount = updatedBudgetRow.budgetAmount
       
+      if (budgetAmount > updatedBudgetAmount) {
+        totalBudgetAmountLeft.value += (budgetAmount - updatedBudgetAmount)
+      }
+      else if (budgetAmount < updatedBudgetAmount) {
+        totalBudgetAmountLeft.value -= (updatedBudgetAmount - budgetAmount)
+      }
+
       budgetRow.name = updatedBudgetRow.name
       budgetRow.budgetAmount = updatedBudgetRow.budgetAmount
       budgetRow.spent = updatedBudgetRow.spent
-
-      calculateBudgetAmountLeft(budgetRow.budgetAmount, budgetRow.spent)
 
       showPopup.value = false
     }
@@ -94,26 +105,31 @@ export default defineComponent({
 
     // Add budget row feature
     // TODO: Figure out a better way to create id's
-    // TODO: Create a pop up form like update
     const addRow = () => {
-      budgetRows.value.push({
+      const newBudgetRow : BudgetRow = {
         id: budgetRows.value.length + 1,
         name: 'Category',
         budgetAmount: 0,
         spent: 0
-      })
+      }
+      budgetRows.value.push(newBudgetRow)
+
+      toggleForm(newBudgetRow)
     }
 
 
     // Delete budget row feature
     const deleteRow = (budgetRow: BudgetRow) => {
+      totalBudgetAmountLeft.value += budgetRow.budgetAmount
+      console.log(typeof(budgetRow.budgetAmount))
+      console.log(totalBudgetAmountLeft.value)
       budgetRows.value = 
         budgetRows.value.filter(br => br.id != budgetRow.id)
     }
 
     return { 
-      budgetRows, budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft,  // Variables
-      calculateInitialBudgetAmountLeft, calculateBudgetAmountLeft, toggleForm, onUpdateBudgetRow, addRow, deleteRow  // Functions
+      budgetRows, budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft, isModalVisible, // Variables
+      calculateInitialBudgetAmountLeft, toggleForm, onUpdateBudgetRow, addRow, deleteRow, showModal, closeModal  // Functions
     }
   },
 })
