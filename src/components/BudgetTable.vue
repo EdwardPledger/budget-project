@@ -1,54 +1,61 @@
 <template>
-  <div id="total-amount">
-    <div>Total Budget Left</div>
-    <div id="total-amount-value">${{ totalBudgetAmountLeft }}</div>
-    <it-divider />
-  </div>
-  <div id="headers">
-    <div id="name-header">Category</div>
-    <div id="budget-amount-header">Budget Amount</div>
-    <div id="spent-header">Spent</div>
-    <it-divider />
-  </div>
-  <div id="budgetRows">
-    <ul>
-      <li v-for="budgetRow in budgetRows" :key="budgetRow.id">
-        <div id="name" style="font-weight:bold;">{{ budgetRow.name }}</div> 
-        <div id="budgetAmount">{{ budgetRow.budgetAmount }}</div> 
-        <div id="spent">{{ budgetRow.spent }}</div>
-        <div class="update-row-button">
-          <it-button type="primary" round @click="toggleForm(budgetRow)">
-                    Update
-          </it-button>
-        </div>
-        <div class="delete-row-button">
-          <it-button type="danger" round @click="deleteRow(budgetRow)">
-            Delete
-          </it-button>
-        </div>
+  <div>
+    <div id="total-amount">
+      <div id="total-amount-label">Total Budget Left</div>
+      <div id="total-amount-value">${{ totalBudgetAmountLeft }}</div>
+      <it-divider />
+    </div>
+    <div id="add-row-button">
+      <it-button type="success" round @click="addRow">
+        Add Row
+      </it-button>
+    </div>
+    <div id="budget">
+      <div id="headers">
+        <div id="name-header">Category</div>
+        <div id="budget-amount-header">Budget Amount</div>
+        <div id="spent-header">Spent</div>
         <it-divider />
-      </li>
-    </ul>
+      </div>
+      <div id="budgetRows">
+        <ul>
+          <li v-for="budgetRow in budgetRows" :key="budgetRow.id">
+            <div id="name" style="font-weight:bold;">{{ budgetRow.name }}</div> 
+            <div id="budget-amount">{{ budgetRow.budgetAmount }}</div> 
+            <div id="spent">{{ budgetRow.spent }}</div>
+            <div class="update-row-button">
+              <it-button type="primary" round @click="toggleForm(budgetRow)">
+                        Update
+              </it-button>
+            </div>
+            <div class="delete-row-button">
+              <it-button type="danger" round @click="deleteRow(budgetRow)">
+                Delete
+              </it-button>
+            </div>
+            <it-divider />
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <it-button type="success" round @click="addRow">
-    Add Row
-  </it-button>
-  <it-button @click="showModal">Open Modal</it-button>
-  <ChangePopUp :budgetRow="budgetRowToBeUpdated"
+  <!-- <div id="add-row-button">
+    <ChangePopUp :budgetRow="budgetRowToBeUpdated"
               v-if="showPopup"
               @updateBudgetRow="onUpdateBudgetRow"/>
-  <UpdateCategoryModal v-show="isModalVisible" @close="closeModal"/>        
+  </div> -->
+  <!-- <UpdateCategoryModal v-show="isModalVisible" @close="closeModal"/>         -->
 </template>
 
 <script lang="ts">
 import BudgetRow from '@/types/BudgetRow'
 import { defineComponent, ref } from 'vue'
-import ChangePopUp from './ChangePopUp.vue'
-import UpdateCategoryModal from './UpdateCategoryModal.vue'
+//import ChangePopUp from './ChangePopUp.vue'
+// import UpdateCategoryModal from './UpdateCategoryModal.vue'
 import budgetDataJson from '../assets/json/BudgetData.json'
 
 export default defineComponent({
-  components: { ChangePopUp, UpdateCategoryModal },
+  components: {  },
   setup() {
     const budgetRows = ref<BudgetRow[]>(budgetDataJson.data)
     const totalBudgetAmountLeft = ref<number>(2000)
@@ -136,38 +143,50 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  #total-amount {
-    width: 700px;
-    padding-bottom: 50px;
+#total-amount {
+    width: 30%;
     font-weight: bold;
-  }
-  #total-amount div {
-    float: left;
-    width: 350px;
+    padding-bottom: 25px;
   }
   #total-amount-value {
     text-align: right;
+    float: right;
+    width: 50%;
+    color: green;
+  }
+  #total-amount-label {
+    float: left;
+    width: 50%;
+  }
+
+  #add-row-button {
+    padding-bottom: 25px;
+  }
+  
+  #budget {
+    width: 100%;
+    height: 300px;
   }
 
   #headers {
-    width: 700px;
+    width: 1000px;
     font-weight: bold;
   }
   #name-header {
     float: left;
-    width: 200px;
+    width: 265px;
   }
   #budget-amount-header {
     float: left;
-    width: 125px;
+    width: 200px;
   }
   #spent-header {
     float: left;
-    width: 125px;
+    width: 150px;
   }
 
   #budgetRows {
-    width: 700px;
+    width: 1000px;
   }
   ul {
     list-style-type: none;
@@ -176,10 +195,12 @@ export default defineComponent({
   }
   li div {
     float: left;
-    width: 125px;
+    width: 150px;
   }
   #name {
-    float: left;
-    width: 200px;
+    width: 300px;
+  }
+  #budget-amount {
+    width: 175px;
   }
 </style>
