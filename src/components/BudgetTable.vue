@@ -40,30 +40,33 @@
     </div>
   </div>
   <div id="add-row-button">
-    <ChangePopUp :budgetRow="budgetRowToBeUpdated"
+    <!-- <ChangePopUp :budgetRow="budgetRowToBeUpdated"
               v-if="showPopup"
-              @updateBudgetRow="onUpdateBudgetRow" />
+              @updateBudgetRow="onUpdateBudgetRow" /> -->
   </div>       
 </template>
 
 <script lang="ts">
 import BudgetRow from '@/types/BudgetRow'
-import { defineComponent, ref } from 'vue'
-import ChangePopUp from './ChangePopUp.vue'
-
-import budgetDataJson from '../assets/json/BudgetData.json'
+import { defineComponent, PropType, ref } from 'vue'
+//import ChangePopUp from './ChangePopUp.vue'
 
 export default defineComponent({
-  components: { ChangePopUp },
+  components: {  },
+  props: {
+    budgetRows: {
+      required: true,
+      type: Object as PropType<BudgetRow[]>
+    }
+  },
   emits: ['openUpdateBudgetRowModal'],
   setup(props, context) {
-    const budgetRows = ref<BudgetRow[]>(budgetDataJson.data)
     const totalBudgetAmountLeft = ref<number>(2000)
 
     // Calculate budget amount left feature
     const calculateInitialBudgetAmountLeft = () => {
       
-      budgetRows.value.forEach((br) => {
+      props.budgetRows.forEach((br) => {
         totalBudgetAmountLeft.value -= br.budgetAmount
       })
       
@@ -74,7 +77,7 @@ export default defineComponent({
   
 
     // Update budget row feature
-    let budgetRowToBeUpdated = ref<BudgetRow>(budgetRows.value[0])
+    let budgetRowToBeUpdated = ref<BudgetRow>(props.budgetRows[0])
     let showPopup = ref<boolean>(false)
     
     const toggleForm = (budgetRow: BudgetRow) => {
@@ -84,7 +87,7 @@ export default defineComponent({
 
     const onUpdateBudgetRow = (updatedBudgetRow: any) => {
       let budgetRow : BudgetRow = 
-        budgetRows.value.filter(br => { return br.id === updatedBudgetRow.id })[0]
+        props.budgetRows.filter(br => { return br.id === updatedBudgetRow.id })[0]
       const budgetAmount = budgetRow.budgetAmount
       const updatedBudgetAmount = updatedBudgetRow.budgetAmount
       
@@ -110,12 +113,12 @@ export default defineComponent({
     // TODO: Figure out a better way to create id's
     const addRow = () => {
       const newBudgetRow : BudgetRow = {
-        id: budgetRows.value.length + 1,
+        id: props.budgetRows.length + 1,
         name: 'Category',
         budgetAmount: 0,
         spent: 0
       }
-      budgetRows.value.push(newBudgetRow)
+      //props.budgetRows.push(newBudgetRow)
 
       toggleForm(newBudgetRow)
     }
@@ -126,12 +129,12 @@ export default defineComponent({
       totalBudgetAmountLeft.value += budgetRow.budgetAmount
       console.log(typeof(budgetRow.budgetAmount))
       console.log(totalBudgetAmountLeft.value)
-      budgetRows.value = 
-        budgetRows.value.filter(br => br.id != budgetRow.id)
+      // budgetRows.value = 
+      //   budgetRows.value.filter(br => br.id != budgetRow.id)
     }
 
     return { 
-      budgetRows, budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft,  // Variables
+      budgetRowToBeUpdated, showPopup, totalBudgetAmountLeft,  // Variables
       calculateInitialBudgetAmountLeft, toggleForm, onUpdateBudgetRow, openUpdateBudgetRowModal, addRow, deleteRow,  // Functions
     }
   },

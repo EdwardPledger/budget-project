@@ -1,7 +1,7 @@
 <template>
   <div class="app">
-    <BudgetTable @openUpdateBudgetRowModal="openUpdateBudgetRowModal" />
-    <UpdateCategoryModal v-if="isModalVisible" @closeUpdateBudgetRowModal="closeUpdateBudgetRowModal" :budgetRow="budgetRowToBeUpdated" /> 
+    <BudgetTable @openUpdateBudgetRowModal="openUpdateBudgetRowModal" :budgetRows="budgetRows" />
+    <UpdateCategoryModal v-if="isModalVisible" @submitUpdateBudgetRowModal="submitUpdateBudgetRowModal" :budgetRow="budgetRowToBeUpdated" /> 
   </div>
 </template>
 
@@ -24,19 +24,23 @@ export default defineComponent({
 
     let isModalVisible = ref<boolean>(false)
     let budgetRowToBeUpdated = ref<BudgetRow>(budgetRows.value[0])
-    
+
     const openUpdateBudgetRowModal = (budgetRow : BudgetRow) => {
-      isModalVisible.value = true
       budgetRowToBeUpdated.value = budgetRow
+      isModalVisible.value = true
     }
-    const closeUpdateBudgetRowModal = () =>  {
-      console.log('hi')
+    const submitUpdateBudgetRowModal = (budgetRow : BudgetRow) =>  {
       isModalVisible.value = false
+      let budgetRow2 : BudgetRow = 
+        budgetRows.value.filter(br => { return br.id === budgetRow.id })[0]
+        budgetRow2.name = budgetRow.name
+      budgetRow2.budgetAmount = budgetRow.budgetAmount
+      budgetRow2.spent = budgetRow.spent
     }
 
     return { 
       budgetRows,  // Budget table
-      isModalVisible, budgetRowToBeUpdated, openUpdateBudgetRowModal, closeUpdateBudgetRowModal  // Update modal
+      isModalVisible, budgetRowToBeUpdated, openUpdateBudgetRowModal, submitUpdateBudgetRowModal  // Update modal
     }
   }
 })

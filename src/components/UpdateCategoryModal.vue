@@ -1,17 +1,17 @@
 <template>
   <div id="backdrop">
     <div id="modal">
-        <h2>Update {{ budgetRow.name }}</h2>
-        <it-input labelTop="Category Name" type="text" :placeholder="budgetRow.name" />
-        <it-input labelTop="Budget Amount" type="number" :placeholder="budgetRow.budgetAmount" />
-        <it-input labelTop="Spent" type="number" :placeholder="budgetRow.spent" />
-        <it-button id="submit-button" type="success" round @click="closeUpdateBudgetRowModal">Submit</it-button>
+        <h2>Update Category</h2>
+        <it-input labelTop="Category Name" type="text" v-model="mutableBudgetRow.name" />
+        <it-input labelTop="Budget Amount" v-model="mutableBudgetRow.budgetAmount" />
+        <it-input labelTop="Spent" type="Number" v-model="mutableBudgetRow.spent" />
+        <it-button id="submit-button" type="success" round @click="submitUpdateBudgetRowModal">Submit</it-button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import BudgetRow from '@/types/BudgetRow'
 
 export default defineComponent({
@@ -21,12 +21,18 @@ export default defineComponent({
       type: Object as PropType<BudgetRow>
     }
   },
-  emits: ['closeUpdateBudgetRowModal'],
+  emits: ['submitUpdateBudgetRowModal'],
   setup(props, context) {
-    // Close modal
-    const closeUpdateBudgetRowModal = () => context.emit('closeUpdateBudgetRowModal')
+    const mutableBudgetRow = ref<BudgetRow>({
+        id: props.budgetRow.id,
+        name: props.budgetRow.name,
+        budgetAmount: props.budgetRow.budgetAmount,
+        spent: props.budgetRow.spent
+      })
 
-    return { closeUpdateBudgetRowModal }
+    const submitUpdateBudgetRowModal = () => context.emit('submitUpdateBudgetRowModal', mutableBudgetRow.value)
+
+    return { submitUpdateBudgetRowModal, mutableBudgetRow }
   }
 
 })
