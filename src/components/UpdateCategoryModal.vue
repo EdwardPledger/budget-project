@@ -3,8 +3,8 @@
     <div id="modal">
         <h2>Update Category</h2>
         <it-input labelTop="Category Name" type="text" v-model="mutableBudgetRow.name" />
-        <it-input labelTop="Budget Amount" v-model="mutableBudgetRow.budgetAmount" />
-        <it-input labelTop="Spent" type="Number" v-model="mutableBudgetRow.spent" />
+        <it-number-input class="number-input" style="width: 200px;" labelTop="Budget Amount" hide-controls="true" v-model="mutableBudgetRow.budgetAmount" />
+        <it-number-input class="number-input" style="width: 200px;" labelTop="Spent" hide-controls="true" v-model="mutableBudgetRow.spent" />
         <it-button id="submit-button" type="success" round @click="submitUpdateBudgetRowModal">Submit</it-button>
     </div>
   </div>
