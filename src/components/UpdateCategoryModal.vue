@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue'
-import BudgetRow from '@/types/BudgetRow'
+import BudgetRow from '../interfaces/BudgetRow'
 
 export default defineComponent({
   props: {

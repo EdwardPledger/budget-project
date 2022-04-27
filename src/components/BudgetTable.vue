@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import BudgetRow from '@/types/BudgetRow'
+import BudgetRow from '../interfaces/BudgetRow'
 import { defineComponent, PropType, ref } from 'vue'
 
 export default defineComponent({
@@ -54,7 +54,7 @@ export default defineComponent({
   setup(props, context) {
     // Update budget row feature
     let budgetRowToBeUpdated = ref<BudgetRow>(props.budgetRows[0])
-
+    console.log('hi')
     const openUpdateBudgetRowModal = (budgetRow: BudgetRow) => context.emit('openUpdateBudgetRowModal', budgetRow)
 
     // Add budget row
