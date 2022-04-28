@@ -16,7 +16,7 @@
         <ul>
           <li v-for="budgetRow in budgetRows" :key="budgetRow.id">
             <div id="name" style="font-weight:bold;">{{ budgetRow.name }}</div> 
-            <div id="budget-amount">{{ budgetRow.budgetAmount }}</div> 
+            <div id="budget-amount">{{ budgetRow.budget_amount }}</div> 
             <div id="spent">{{ budgetRow.spent }}</div>
             <div class="update-row-button">
               <it-button type="primary" round @click="openUpdateBudgetRowModal(budgetRow)">
@@ -54,7 +54,6 @@ export default defineComponent({
   setup(props, context) {
     // Update budget row feature
     let budgetRowToBeUpdated = ref<BudgetRow>(props.budgetRows[0])
-    console.log('hi')
     const openUpdateBudgetRowModal = (budgetRow: BudgetRow) => context.emit('openUpdateBudgetRowModal', budgetRow)
 
     // Add budget row
@@ -63,7 +62,7 @@ export default defineComponent({
       const newBudgetRow : BudgetRow = {
         id: props.budgetRows.length + 1,
         name: 'Category',
-        budgetAmount: 0,
+        budget_amount: 0,
         spent: 0
       }
       context.emit('addBudgetRow', newBudgetRow)

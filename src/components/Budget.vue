@@ -21,21 +21,14 @@ import BudgetRow from '../interfaces/BudgetRow'
 import BudgetTable from './BudgetTable.vue'
 import UpdateCategoryModal from './UpdateCategoryModal.vue'
 import BudgetAmount from './BudgetAmount.vue'
-import getBudgetRows from '../apis/BudgetRows'
+import BudgetRowApis from '../apis/BudgetRows'
 //import { definitions } from '../../types/supabase'
 
 export default defineComponent({
   components: {  BudgetAmount, BudgetTable, UpdateCategoryModal },
   async setup() {
-    // const budgetRows = ref<BudgetRow[]>([
-    //   { id: 1, name: 'Rent', budgetAmount: 1000, spent: 800 },
-    //   { id: 2, name: 'Groceries', budgetAmount: 100, spent: 25 },
-    //   { id: 3, name: 'Gas', budgetAmount: 50, spent: 0 }
-    // ])
-
     const budgetRows = ref<BudgetRow[] | undefined>()
-    budgetRows.value = await getBudgetRows()
-    console.log('2', budgetRows.value)
+    budgetRows.value = await BudgetRowApis.getBudgetRows()
 
     const budgetAmount = ref<number>(2000)
     let isModalVisible = ref<boolean>(false)
@@ -53,25 +46,25 @@ export default defineComponent({
         let originalBudgetRow : BudgetRow = 
           budgetRows.value.filter(br => { return br.id === budgetRow.id })[0]
         
-        budgetAmount.value += (originalBudgetRow.budgetAmount - budgetRow.budgetAmount)
-        console.log(typeof(budgetRow.budgetAmount))
+        budgetAmount.value += (originalBudgetRow.budget_amount - budgetRow.budget_amount)
+        console.log(typeof(budgetRow.budget_amount))
         originalBudgetRow.name = budgetRow.name
-        originalBudgetRow.budgetAmount = budgetRow.budgetAmount
+        originalBudgetRow.budget_amount = budgetRow.budget_amount
         originalBudgetRow.spent = budgetRow.spent
       }
     }
 
     const addBudgetRow = (newBudgetRow : BudgetRow) => {
       if (budgetRows.value != null && budgetRows.value.length > 0) {
+        console.log('hi')
         budgetRows.value.push(newBudgetRow)
-        console.log(typeof(newBudgetRow.budgetAmount))
         openUpdateBudgetRowModal(newBudgetRow)
       }
     }
 
     const deleteBudgetRow = (budgetRow: BudgetRow) => {
       if (budgetRows.value != null && budgetRows.value.length > 0) {
-        budgetAmount.value += budgetRow.budgetAmount
+        budgetAmount.value += budgetRow.budget_amount
         budgetRows.value = budgetRows.value.filter(br => br.id != budgetRow.id)
       }
     }

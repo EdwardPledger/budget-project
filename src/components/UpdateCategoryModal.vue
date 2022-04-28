@@ -3,7 +3,7 @@
     <div id="modal">
         <h2>Update Category</h2>
         <it-input labelTop="Category Name" type="text" v-model="mutableBudgetRow.name" />
-        <it-number-input class="number-input" style="width: 200px;" labelTop="Budget Amount" hide-controls="true" v-model="mutableBudgetRow.budgetAmount" />
+        <it-number-input class="number-input" style="width: 200px;" labelTop="Budget Amount" hide-controls="true" v-model="mutableBudgetRow.budget_amount" />
         <it-number-input class="number-input" style="width: 200px;" labelTop="Spent" hide-controls="true" v-model="mutableBudgetRow.spent" />
         <it-button id="submit-button" type="success" round @click="submitUpdateBudgetRowModal">Submit</it-button>
     </div>
@@ -26,7 +26,7 @@ export default defineComponent({
     const mutableBudgetRow = ref<BudgetRow>({
         id: props.budgetRow.id,
         name: props.budgetRow.name,
-        budgetAmount: props.budgetRow.budgetAmount,
+        budget_amount: props.budgetRow.budget_amount,
         spent: props.budgetRow.spent
       })
 

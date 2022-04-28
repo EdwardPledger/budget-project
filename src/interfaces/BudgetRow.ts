@@ -1,7 +1,7 @@
 interface BudgetRow {
-  id: number
+  id?: number
   name: string,
-  budgetAmount: number,
+  budget_amount: number,
   spent: number
 }
 
