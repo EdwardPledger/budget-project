@@ -14,7 +14,7 @@
       </div>
       <div id="budgetRows">
         <ul>
-          <li v-for="budgetRow in budgetRows" :key="budgetRow.id">
+          <li v-for="budgetRow in budgetRows" :key="budgetRow.budget_row_id">
             <div id="name" style="font-weight:bold;">{{ budgetRow.name }}</div> 
             <div id="budget-amount">{{ budgetRow.budget_amount }}</div> 
             <div id="spent">{{ budgetRow.spent }}</div>
@@ -60,7 +60,6 @@ export default defineComponent({
     // TODO: Figure out a better way to create id's
     const addRow = () => {
       const newBudgetRow : BudgetRow = {
-        id: props.budgetRows.length + 1,
         name: 'Category',
         budget_amount: 0,
         spent: 0

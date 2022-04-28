@@ -39,33 +39,36 @@ export default defineComponent({
       isModalVisible.value = true
     }
 
-    const submitUpdateBudgetRowModal = (budgetRow : BudgetRow) =>  {
+    const submitUpdateBudgetRowModal = async (budgetRow : BudgetRow) =>  {
       isModalVisible.value = false
 
       if (budgetRows.value != null && budgetRows.value.length > 0) {
         let originalBudgetRow : BudgetRow = 
-          budgetRows.value.filter(br => { return br.id === budgetRow.id })[0]
+          budgetRows.value.filter(br => { return br.budget_row_id === budgetRow.budget_row_id })[0]
         
         budgetAmount.value += (originalBudgetRow.budget_amount - budgetRow.budget_amount)
-        console.log(typeof(budgetRow.budget_amount))
+
         originalBudgetRow.name = budgetRow.name
         originalBudgetRow.budget_amount = budgetRow.budget_amount
         originalBudgetRow.spent = budgetRow.spent
+
+        await BudgetRowApis.updateBudgetRow(budgetRow)
       }
     }
 
-    const addBudgetRow = (newBudgetRow : BudgetRow) => {
-      if (budgetRows.value != null && budgetRows.value.length > 0) {
-        console.log('hi')
-        budgetRows.value.push(newBudgetRow)
-        openUpdateBudgetRowModal(newBudgetRow)
+    const addBudgetRow = async (newBudgetRow : BudgetRow) => {
+      const insertedBudgetRow = await BudgetRowApis.insertBudgetRow(newBudgetRow)
+
+      if (budgetRows.value != null && budgetRows.value.length > 0 && insertedBudgetRow != null) {
+        budgetRows.value.push(insertedBudgetRow[0])
+        openUpdateBudgetRowModal(insertedBudgetRow[0])
       }
     }
 
     const deleteBudgetRow = (budgetRow: BudgetRow) => {
       if (budgetRows.value != null && budgetRows.value.length > 0) {
         budgetAmount.value += budgetRow.budget_amount
-        budgetRows.value = budgetRows.value.filter(br => br.id != budgetRow.id)
+        budgetRows.value = budgetRows.value.filter(br => br.budget_row_id != budgetRow.budget_row_id)
       }
     }
 

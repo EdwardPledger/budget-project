@@ -6,21 +6,22 @@ class BudgetRowApis {
     try {
       const response = await supabase
         .from<BudgetRow>('budget_row')
-        .select('name, budget_amount, spent')
+        .select('budget_row_id, name, budget_amount, spent')
   
         if (response.error) throw response.error
         else {
           return response.data
         }
     } catch (error) {
+      console.log(error)
       alert(error)
     }
   }
   
-  static insertBudgetRows = async (budgetRow : BudgetRow) => {
+  static insertBudgetRow = async (budgetRow : BudgetRow) => {
     try {
       const response = await supabase
-        .from<BudgetRow>('budget-row')
+        .from<BudgetRow>('budget_row')
         .insert([
           { 
             name: budgetRow.name, 
@@ -32,8 +33,29 @@ class BudgetRowApis {
       if (response.error) throw response.error
       else return response.data
     } catch (error) {
+      console.log(error)
       alert(error)
     }
+  }
+
+  static updateBudgetRow = async (budgetRow : BudgetRow) => {
+    try {
+      const response = await supabase
+      .from<BudgetRow>('budget_row')
+      .update({ 
+        name: budgetRow.name,
+        budget_amount: budgetRow.budget_amount,
+        spent: budgetRow.spent
+      })
+      .match({ budget_row_id: budgetRow.budget_row_id })
+
+      if (response.error) throw response.error
+      else return response.data
+    } catch (error) {
+      console.log(error)
+      alert(error)
+    }
+
   }
 }
 

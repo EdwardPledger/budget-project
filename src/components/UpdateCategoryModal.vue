@@ -24,7 +24,7 @@ export default defineComponent({
   emits: ['submitUpdateBudgetRowModal'],
   setup(props, context) {
     const mutableBudgetRow = ref<BudgetRow>({
-        id: props.budgetRow.id,
+        budget_row_id: props.budgetRow.budget_row_id,
         name: props.budgetRow.name,
         budget_amount: props.budgetRow.budget_amount,
         spent: props.budgetRow.spent
