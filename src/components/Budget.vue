@@ -22,7 +22,6 @@ import BudgetTable from './BudgetTable.vue'
 import UpdateCategoryModal from './UpdateCategoryModal.vue'
 import BudgetAmount from './BudgetAmount.vue'
 import BudgetRowApis from '../apis/BudgetRows'
-//import { definitions } from '../../types/supabase'
 
 export default defineComponent({
   components: {  BudgetAmount, BudgetTable, UpdateCategoryModal },
@@ -65,10 +64,13 @@ export default defineComponent({
       }
     }
 
-    const deleteBudgetRow = (budgetRow: BudgetRow) => {
-      if (budgetRows.value != null && budgetRows.value.length > 0) {
+    const deleteBudgetRow = async (budgetRow: BudgetRow) => {
+      if (budgetRows.value != null && budgetRows.value.length > 0 && budgetRow.budget_row_id != undefined) {
         budgetAmount.value += budgetRow.budget_amount
+        
         budgetRows.value = budgetRows.value.filter(br => br.budget_row_id != budgetRow.budget_row_id)
+        
+        await BudgetRowApis.deleteBudgetRow(budgetRow.budget_row_id) 
       }
     }
 

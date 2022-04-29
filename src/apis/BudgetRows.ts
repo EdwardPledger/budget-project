@@ -55,7 +55,20 @@ class BudgetRowApis {
       console.log(error)
       alert(error)
     }
+  }
 
+  static deleteBudgetRow = async (budgetRowId : number) => {
+    try {
+        const response = await supabase
+        .from<BudgetRow>('budget_row')
+        .delete()
+        .match({ budget_row_id: budgetRowId })
+
+        if (response.error) throw response.error
+    } catch (error) {
+      console.log(error)
+      alert(error)
+    }
   }
 }
 
