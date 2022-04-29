@@ -34,7 +34,7 @@ export default defineComponent({
     const currentBalance = ref<number>()
     const budgetBalance : BudgetBalance | undefined 
       = await BudgetBalanceApis.getBudgetAmount()
-      
+
     if (budgetBalance != null) {
       currentBalance.value = budgetBalance.current_balance
     }
@@ -82,6 +82,8 @@ export default defineComponent({
       if (budgetRows.value != null && budgetRows.value.length > 0 && budgetRow.budget_row_id != undefined) {
         if (budgetBalance != null) {
           budgetBalance.current_balance += budgetRow.budget_amount
+          currentBalance.value = budgetBalance.current_balance
+          await BudgetBalanceApis.updateBudgetAmount(budgetBalance)
         }
         
         
