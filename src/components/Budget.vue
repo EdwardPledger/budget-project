@@ -1,6 +1,6 @@
 <template>
-  <BudgetAmount 
-    :budgetAmount="budgetAmount"  
+  <CurrentBalance 
+    :currentBalance="currentBalance"  
   />
   <BudgetTable 
     @openUpdateBudgetRowModal="openUpdateBudgetRowModal"
@@ -18,20 +18,30 @@
 <script lang='ts'>
 import { defineComponent, ref } from 'vue'
 import BudgetRow from '../interfaces/BudgetRow'
+import BudgetBalance from '../interfaces/BudgetBalance'
 import BudgetTable from './BudgetTable.vue'
 import UpdateCategoryModal from './UpdateCategoryModal.vue'
-import BudgetAmount from './BudgetAmount.vue'
+import CurrentBalance from './CurrentBalance.vue'
 import BudgetRowApis from '../apis/BudgetRows'
+import BudgetBalanceApis from '../apis/BudgetBalanceApis'
 
 export default defineComponent({
-  components: {  BudgetAmount, BudgetTable, UpdateCategoryModal },
+  components: {  CurrentBalance, BudgetTable, UpdateCategoryModal },
   async setup() {
     const budgetRows = ref<BudgetRow[] | undefined>()
     budgetRows.value = await BudgetRowApis.getBudgetRows()
 
-    const budgetAmount = ref<number>(2000)
+    const currentBalance = ref<number>()
+    const budgetBalance : BudgetBalance | undefined 
+      = await BudgetBalanceApis.getBudgetAmount()
+      
+    if (budgetBalance != null) {
+      currentBalance.value = budgetBalance.current_balance
+    }
+    
     let isModalVisible = ref<boolean>(false)
     let budgetRowToBeUpdated = ref<BudgetRow>()
+
     //TODO: better way to handle null & length 0
     const openUpdateBudgetRowModal = (budgetRow : BudgetRow) => {
       budgetRowToBeUpdated.value = budgetRow
@@ -45,8 +55,12 @@ export default defineComponent({
         let originalBudgetRow : BudgetRow = 
           budgetRows.value.filter(br => { return br.budget_row_id === budgetRow.budget_row_id })[0]
         
-        budgetAmount.value += (originalBudgetRow.budget_amount - budgetRow.budget_amount)
-
+        if (budgetBalance != null) {
+          budgetBalance.current_balance += (originalBudgetRow.budget_amount - budgetRow.budget_amount)
+          currentBalance.value = budgetBalance.current_balance
+          await BudgetBalanceApis.updateBudgetAmount(budgetBalance)
+        }
+      
         originalBudgetRow.name = budgetRow.name
         originalBudgetRow.budget_amount = budgetRow.budget_amount
         originalBudgetRow.spent = budgetRow.spent
@@ -66,7 +80,10 @@ export default defineComponent({
 
     const deleteBudgetRow = async (budgetRow: BudgetRow) => {
       if (budgetRows.value != null && budgetRows.value.length > 0 && budgetRow.budget_row_id != undefined) {
-        budgetAmount.value += budgetRow.budget_amount
+        if (budgetBalance != null) {
+          budgetBalance.current_balance += budgetRow.budget_amount
+        }
+        
         
         budgetRows.value = budgetRows.value.filter(br => br.budget_row_id != budgetRow.budget_row_id)
         
@@ -75,7 +92,7 @@ export default defineComponent({
     }
 
     return { 
-      budgetRows, budgetAmount,  // Budget table
+      budgetRows, currentBalance,  // Budget table
       isModalVisible, budgetRowToBeUpdated, openUpdateBudgetRowModal, submitUpdateBudgetRowModal,  // Update modal
       addBudgetRow,  // Add budget row
       deleteBudgetRow,  // Delete budget row

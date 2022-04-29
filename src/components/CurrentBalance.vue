@@ -1,7 +1,7 @@
 <template>
   <div id="total-amount">
     <div id="total-amount-label">Total Budget Left</div>
-    <div id="total-amount-value">${{ budgetAmount }}</div>
+    <div id="total-amount-value">${{ currentBalance }}</div>
     <it-divider />
   </div>
 </template>
@@ -11,7 +11,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
-    budgetAmount: {
+    currentBalance: {
       required: true,
       type: Number
     }
