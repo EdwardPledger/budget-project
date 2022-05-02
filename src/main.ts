@@ -3,6 +3,7 @@ import App from './App.vue'
 import Equal from 'equal-vue'
 import { initializeApp } from 'firebase/app'
 import 'equal-vue/dist/style.css'
+import router from './router'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -18,4 +19,4 @@ const firebaseConfig = {
 // Initialize firebase
 initializeApp(firebaseConfig)
 
-createApp(App).use(Equal).mount('#app')
+createApp(App).use(Equal).use(router).mount('#app')

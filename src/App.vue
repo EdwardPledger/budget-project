@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <Suspense>
-      <Budget />
+      <router-view />
       <template #fallback>
         <h2>Loading...</h2>
       </template>
@@ -11,11 +11,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import Budget from './components/Budget.vue'
+//import Budget from './components/Budget.vue'
 
 export default defineComponent({
   name: 'App',
-  components: { Budget },
+  components: {  },
   setup() { }
 })
 </script>

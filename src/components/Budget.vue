@@ -86,7 +86,6 @@ export default defineComponent({
           await BudgetBalanceApis.updateBudgetAmount(budgetBalance)
         }
         
-        
         budgetRows.value = budgetRows.value.filter(br => br.budget_row_id != budgetRow.budget_row_id)
         
         await BudgetRowApis.deleteBudgetRow(budgetRow.budget_row_id) 
