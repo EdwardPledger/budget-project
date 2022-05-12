@@ -28,7 +28,7 @@ export default defineComponent({
     const loginUser = async () => {
       const fetchedUser = await UserApis.getUser(username.value)
 
-      if (fetchedUser == null || fetchedUser?.user_password != password.value) {
+      if (fetchedUser == null || fetchedUser?.username != username.value || fetchedUser?.user_password != password.value) {
         alert('Username and/or password incorrect')
       }
       else {

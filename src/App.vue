@@ -11,12 +11,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-//import Budget from './components/Budget.vue'
+//import router from './router'
 
 export default defineComponent({
   name: 'App',
-  components: {  },
-  setup() { }
+  setup() {
+   }
 })
 </script>
 
