@@ -2,12 +2,24 @@
   <CurrentBalance 
     :currentBalance="currentBalance"  
   />
-  <BudgetTable 
-    @openUpdateBudgetRowModal="openUpdateBudgetRowModal"
-    @addBudgetRow="addBudgetRow"
-    @deleteBudgetRow="deleteBudgetRow" 
-    :budgetRows="budgetRows" 
-  />
+  <div class="budgetTableAndTransaction">
+    <div class="budgetTable">
+      <BudgetTable 
+        @openUpdateBudgetRowModal="openUpdateBudgetRowModal"
+        @addBudgetRow="addBudgetRow"
+        @deleteBudgetRow="deleteBudgetRow" 
+        :budgetRows="budgetRows" 
+      />
+    </div>
+    <div class="transation">
+      <Transaction
+        :budgetRows="budgetRows"
+        @submitUpdateBudgetRowModal="submitUpdateBudgetRowModal"
+        @submitUpdateBudgetBalance="submitUpdateBudgetBalance"
+      />
+    </div>
+  </div>
+  
   <UpdateCategoryModal 
     v-if="isModalVisible" 
     @submitUpdateBudgetRowModal="submitUpdateBudgetRowModal" 
@@ -24,9 +36,10 @@ import UpdateCategoryModal from './UpdateCategoryModal.vue'
 import CurrentBalance from './CurrentBalance.vue'
 import BudgetRowApis from '../apis/BudgetRows'
 import BudgetBalanceApis from '../apis/BudgetBalanceApis'
+import Transaction from './Transaction.vue'
 
 export default defineComponent({
-  components: {  CurrentBalance, BudgetTable, UpdateCategoryModal },
+  components: {  CurrentBalance, BudgetTable, UpdateCategoryModal, Transaction },
   async setup() {
     const budgetRows = ref<BudgetRow[] | undefined>()
     budgetRows.value = await BudgetRowApis.getBudgetRows()
@@ -92,16 +105,27 @@ export default defineComponent({
       }
     }
 
+    const submitUpdateBudgetBalance = async (paymentAmount : number) => {
+      if (budgetBalance?.current_balance != undefined) budgetBalance.current_balance += paymentAmount
+
+      if (budgetBalance != undefined) await BudgetBalanceApis.updateBudgetAmount(budgetBalance)
+
+      currentBalance.value = budgetBalance?.current_balance
+    }
+
     return { 
       budgetRows, currentBalance,  // Budget table
       isModalVisible, budgetRowToBeUpdated, openUpdateBudgetRowModal, submitUpdateBudgetRowModal,  // Update modal
       addBudgetRow,  // Add budget row
       deleteBudgetRow,  // Delete budget row
+      submitUpdateBudgetBalance
     }
   },
 })
 </script>
 
 <style scoped>
-
+  .budgetTable {
+    float: left;
+  }
 </style>
